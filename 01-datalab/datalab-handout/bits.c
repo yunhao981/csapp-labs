@@ -165,10 +165,13 @@ int tmin(void) {
  *   Rating: 1
  */
 int isTmax(int x) {
-  int tmin = 1 << 31;
-  int tmax = ~ tmin;
-  int tmp = x ^ tmax;
-  return !tmp;
+  int tmin = 1<<31;
+  int i = x + 1;
+  x = x + i;
+  x = ~x;
+  i = !i;
+  x = x + i;
+  return !x;
 }
 /* 
  * allOddBits - return 1 if all odd-numbered bits in word set to 1
@@ -222,7 +225,7 @@ int isAsciiDigit(int x) {
  */
 int conditional(int x, int y, int z) {
   int test = ~!!x + 1;
-  return test & y | ~test & z;
+  return (test & y) | (~test & z);
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
@@ -263,7 +266,23 @@ int logicalNeg(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-  return 0;
+  int b16, b8, b4, b2, b1, b0, ans;
+  int sign = x >> 31;
+  x = (sign & ~x) | (~sign & x);
+  
+  b16 = !!(x>>16) << 4;
+  x = x >> b16;
+  b8 = !!(x>>8) << 3;
+  x = x >> b8;
+  b4 = !!(x>>4) << 2;
+  x = x >> b4;
+  b2 = !!(x>>2) << 1;
+  x = x >> b2;
+  b1 = !!(x>>1);
+  x = x >> b1;
+  b0 = x;
+  ans = 1 + b0 + b1 + b2 + b4 + b8 + b16;
+  return ans;
 }
 //float
 /* 
@@ -278,6 +297,8 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
+  
+
   return 2;
 }
 /* 
